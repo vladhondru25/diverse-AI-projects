@@ -7,9 +7,16 @@ The Cifar10 [1] dataset is solved using inception layers, as in [2]. This was im
 The code is written as a Jupyer Notebook. It can be run locally if [JupyterLab](https://jupyter.org/) in installed. In order to run it, just run the cells in their respective order. 
 
 ### Architecture
+The first layer is composed of a convolution operation followed by a max pooling. The second layer consists of a convolution. Then, two inception layers are added with a max pooling in between them. The structure of the inception layer can be seen in the figure below.
+
+![alt text](https://github.com/vladhondru25/diverse-AI-projects/blob/master/./Inception-network/inception_module.png?raw=true)
+
+Then, an average pooling with a kernel size equal to the feature maps to result in each feature map containing only 1 value. Finally, a dropout with a rate of 50% is added before the final linear layer to map to the classes dimension. 
+
+It is important to note that batch normalisation with rectified linear layers activation function are used after after each convolutional operation.
 
 ### Results
-An accuracy of 82.82% was achieved on the testing set. This is with approximately 5% higher than our implementation of a simple 5-layer
+An accuracy of 82.82% was achieved on the testing set. This is with approximately 5% higher than our [implementation](https://github.com/vladhondru25/famous-datasets/blob/master/cifar-10/cifar10_no_resnet.ipynb) of a simple 6-layer network (5 convolutions with an average pooling in the end, followed by a linear layer). 
 
 
 
