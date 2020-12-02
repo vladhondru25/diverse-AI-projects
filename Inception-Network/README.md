@@ -9,7 +9,7 @@ The code is written as a Jupyer Notebook. It can be run locally if [JupyterLab](
 ### Architecture
 The first layer is composed of a convolution operation followed by a max pooling. The second layer consists of a convolution. Then, two inception layers are added with a max pooling in between them. The structure of the inception layer can be seen in the figure below.
 
-![alt text](https://github.com/vladhondru25/diverse-AI-projects/blob/master/./Inception-network/inception_module.png?raw=true)
+![alt text](https://github.com/vladhondru25/diverse-AI-projects/blob/master/./Inception-Network/inception_module.png?raw=true)
 
 Then, an average pooling with a kernel size equal to the feature maps to result in each feature map containing only 1 value. Finally, a dropout with a rate of 50% is added before the final linear layer to map to the classes dimension. 
 
