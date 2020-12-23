@@ -28,5 +28,5 @@ If either JupyterLab is not installed on the machine or a faster training is des
 
 ## References
 
-[[1](https://www.cs.toronto.edu/~kriz/cifar.html)] Cifar10 dataset
+[[1](https://www.cs.toronto.edu/~kriz/cifar.html)] Cifar10 dataset \
 [[2](https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43022.pdf)] Christian Szegedy, Wei Liu, Yangqing Jia1, Pierre Sermanet1, Scott Reed, Dragomir Anguelov, Dumitru Erhan, Vincent Vanhoucke, Andrew Rabinovich, Google Inc., University of North Carolina, Chapel Hill, University of Michigan, Ann Arbor, Magic Leap Inc.. "Going Deeper with Convolutions." IEEE 2015.

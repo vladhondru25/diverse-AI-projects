@@ -13,5 +13,5 @@ If either JupyterLab is not installed on the machine or a faster training is des
 
 ## References
 
-[[1](https://www.cs.toronto.edu/~kriz/cifar.html)] Cifar10 dataset
+[[1](https://www.cs.toronto.edu/~kriz/cifar.html)] Cifar10 dataset \
 [[2](https://arxiv.org/abs/1911.11929)] Chien-Yao Wang and Hong-Yuan Mark Liao and I-Hau Yeh and Yueh-Hua Wu and Ping-Yang Chen and Jun-Wei Hsieh. "CSPNet: A New Backbone that can Enhance Learning Capability of CNN." 2019.
