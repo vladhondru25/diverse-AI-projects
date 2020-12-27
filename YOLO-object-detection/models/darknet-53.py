@@ -12,36 +12,36 @@ class DarkNet53(nn.Module):
 
         self.network = nn.Sequential(
             # Initial convolution
-            Conv2dBlock(in_C=3,  out_C=32, k=3, s=1, p=1),
+            Conv2dBlock(in_C=3,  out_C=32, k=3, s=1, p=1, activation='leakyRelu'),
             # Downsample -> 128x128x64
-            Conv2dBlock(in_C=32, out_C=64, k=3, s=2, p=1),
+            Conv2dBlock(in_C=32, out_C=64, k=3, s=2, p=1, activation='leakyRelu'),
 
             # First residual block
             ResidualBlock(in_C=64),
 
             # Downsample -> 64x64x128
-            Conv2dBlock(in_C=64, out_C=128, k=3, s=2, p=1),
+            Conv2dBlock(in_C=64, out_C=128, k=3, s=2, p=1, activation='leakyRelu'),
 
             # Second residual block
             *[ResidualBlock(in_C=128) for _ in range(2)],
 
             # Downsample -> 32x32x256
-            Conv2dBlock(in_C=128, out_C=256, k=3, s=2, p=1),
+            Conv2dBlock(in_C=128, out_C=256, k=3, s=2, p=1, activation='leakyRelu'),
 
             # Third residual block
             *[ResidualBlock(in_C=256) for _ in range(8)],
 
             # Downsample -> 16x16x512
-            Conv2dBlock(in_C=256, out_C=512, k=3, s=2, p=1),
+            Conv2dBlock(in_C=256, out_C=512, k=3, s=2, p=1, activation='leakyRelu'),
 
             # Fourth residual block
             *[ResidualBlock(in_C=512) for _ in range(8)],
 
             # Downsample -> 8x8x1024
-            Conv2dBlock(in_C=512, out_C=1024, k=3, s=2, p=1),
+            Conv2dBlock(in_C=512, out_C=1024, k=3, s=2, p=1, activation='leakyRelu'),
 
             # Fifth residual block
-            *[ResidualBlock(in_C=1024) for _ in range(4)],
+            *[ResidualBlock(in_C=1024, activation='leakyRelu') for _ in range(4)],
 
             nn.AvgPool2d(kernel_size=8),
 

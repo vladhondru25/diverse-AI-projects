@@ -1,0 +1,1 @@
+This is not a whole YOLO-based object detection project, but rather the neural networks' architectures involved and few other utility functions.

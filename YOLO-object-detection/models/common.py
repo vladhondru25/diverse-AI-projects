@@ -7,6 +7,7 @@ import torch.nn.functional as F
 
 ACTIVATIONS = {
     'relu': nn.ReLU(inplace=True),
+    'leakyRelu': nn.LeakyReLU(negative_slope=0.01, inplace=True),
     'tanh': nn.Tanh(),
     'sigmoid': nn.Sigmoid(),
     'identity': nn.Identity()
