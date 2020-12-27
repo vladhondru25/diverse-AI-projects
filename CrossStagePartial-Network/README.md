@@ -1,6 +1,6 @@
 # Cifar10 with Cross Stage Partial Network
 
-The Cifar10 [1] dataset is solved using Cross Stage Partial blocks, as in [2]. This was implemented in PyTorch.
+The Cifar10 [1] dataset is solved using Cross Stage Partial blocks, as in [2]. The architecture follows the model for CSPDarknet53, which is the backbone of Yolo v4 and v5. This was implemented in PyTorch.
 
 ## How to run
 
