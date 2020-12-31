@@ -1,3 +1,4 @@
+# In progress
 import numpy as np
 
 import torch
@@ -7,9 +8,9 @@ import torch.nn.functional as F
 from common import Conv2dBlock, CSPBlock
 
 
-class CSPDarknet53(nn.Module):
+class CSPDarknet53_SPP(nn.Module):
     def __init__(self):
-        super(CSPDarknet53, self).__init__()
+        super(CSPDarknet53_SPP, self).__init__()
 
         self.downsample_layers = nn.ModuleList([
             Conv2dBlock(in_C=32,  out_C=64,   k=3, s=2, p=1),
@@ -42,4 +43,9 @@ class CSPDarknet53(nn.Module):
 
     def forward(self, x):
         return self.network(x)
-        
+
+
+if __name__ == "__main__":
+    modelTest = CSPDarknet53_SPP()
+    xTest = torch.rand((32,3,256,256))
+    print(modelTest(xTest).shape)
