@@ -57,11 +57,3 @@ class CSPDarknet53_SPP(nn.Module):
 
     def forward(self, x):
         return self.network(x)
-
-
-if __name__ == "__main__":
-    modelTest = CSPDarknet53_SPP(10)
-    xTest = torch.rand((32,3,256,256))
-    print(modelTest(xTest).shape)
-
-    # Output: torch.Size([32, 1000])
