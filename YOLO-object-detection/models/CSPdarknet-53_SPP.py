@@ -5,11 +5,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from common import Conv2dBlock, CSPBlock
+from common import Conv2dBlock, CSPBlock, SPP
 
 
 class CSPDarknet53_SPP(nn.Module):
-    def __init__(self):
+    def __init__(self, classes):
         super(CSPDarknet53_SPP, self).__init__()
 
         self.downsample_layers = nn.ModuleList([
@@ -33,12 +33,26 @@ class CSPDarknet53_SPP(nn.Module):
             Conv2dBlock(in_C=3,  out_C=32, k=3, s=1, p=1),
             # CSP Blocks and downsample layers
             *[val for pair in zip(self.downsample_layers, self.csp_blocks) for val in pair],
+            
+            # Convolutional layers before SPP module
+            Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0),
+            Conv2dBlock(in_C=512,  out_C=1024, k=3, s=1, p=1),
+            Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0),
+            
+            # SPP Module
+            SPP(in_C=512, out_C=512),
+            
+            # Final convolutional layers
+            Conv2dBlock(in_C=512,  out_C=1024, k=3, s=1, p=1),
+            Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0),
+            Conv2dBlock(in_C=512,  out_C=256,  k=1, s=1, p=0),
+            
             # Global average pooling
             nn.AvgPool2d(kernel_size=8),
             # Flatten
             nn.Flatten(),
             # Fully-connected layer
-            nn.Linear(in_features=1024, out_features=1000)
+            nn.Linear(in_features=256, out_features=classes)
         )
 
     def forward(self, x):
@@ -46,6 +60,8 @@ class CSPDarknet53_SPP(nn.Module):
 
 
 if __name__ == "__main__":
-    modelTest = CSPDarknet53_SPP()
+    modelTest = CSPDarknet53_SPP(10)
     xTest = torch.rand((32,3,256,256))
     print(modelTest(xTest).shape)
+
+    # Output: torch.Size([32, 1000])
