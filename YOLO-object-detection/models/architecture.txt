@@ -1,0 +1,26 @@
+0) Conv2dBlock out_channels = 32
+
+1) Conv2dBlock - downsample out_channels = 64
+2) CSPBlock - channels = 64
+
+3) Conv2dBlock - downsample out_channels = 128
+4) CSPBlock - channels = 128
+
+5) Conv2dBlock - downsample out_channels = 256
+6) CSPBlock - channels = 256
+
+7) Conv2dBlock - downsample out_channels = 512
+8) CSPBlock - channels = 512
+
+9)  Conv2dBlock - downsample out_channels = 1024
+10) CSPBlock - channels = 1024
+
+11) Conv2dBlock out_channels = 1024
+12) Conv2dBlock out_channels = 512
+13) Conv2dBlock out_channels = 1024
+
+14) SPP
+
+15) Conv2dBlock out_channels = 512
+16) Conv2dBlock out_channels = 1024
+17) Conv2dBlock out_channels = 512
