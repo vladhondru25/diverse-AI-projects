@@ -96,11 +96,3 @@ class SPP(nn.Module):
         spatial_pyramid_output = torch.cat([x] + [level(x) for level in self.spatial_pyramid], dim=1)
         
         return self.cv2(spatial_pyramid_output)
-    
-
-if __name__ == "__main__":
-    modelTest = SPP(1024,1000)
-    xTest = torch.rand((32,1024,13,13))
-    print(modelTest(xTest).shape)
-
-    # Output: torch.Size([32, 1000])

@@ -9,7 +9,7 @@ from common import Conv2dBlock, CSPBlock, SPP
 
 
 class CSPDarknet53_SPP_PAN(nn.Module):
-    def __init__(self, classes):
+    def __init__(self):
         super(CSPDarknet53_SPP_PAN, self).__init__()
 
         self.downsample_layers = nn.ModuleList([
@@ -162,14 +162,3 @@ class CSPDarknet53_SPP_PAN(nn.Module):
         outputs.append(self.n4_head(x))
         
         return outputs
-    
-    
-if __name__ == "__main__":
-    xTest = torch.rand((32,3,256,256))
-    modelTest = CSPDarknet53_SPP_PAN(10)
-
-    yTest = modelTest(xTest)
-    
-    print(yTest[0].shape)
-    print(yTest[1].shape)
-    print(yTest[2].shape)
