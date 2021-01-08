@@ -45,7 +45,6 @@ class CSPDarknet53_SPP_PAN(nn.Module):
             # Final convolutional layers
             Conv2dBlock(in_C=512,  out_C=1024, k=3, s=1, p=1),
             Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0),
-            Conv2dBlock(in_C=512,  out_C=256,  k=1, s=1, p=0),
         ])
         
         self.upsample_layers = nn.ModuleList([
@@ -58,14 +57,17 @@ class CSPDarknet53_SPP_PAN(nn.Module):
             Conv2dBlock(in_C=256, out_C=128, k=1, s=1, p=0)
         ])
         
-        self.p3_layers = nn.Sequential(
-            Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
-            Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
-            Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
-            Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
-            Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
-            Conv2dBlock(in_C=256, out_C=128, k=1, s=1, p=0),
-        )
+        self.p3_layers = nn.ModuleList([
+            Conv2dBlock(in_C=512,  out_C=256,  k=1, s=1, p=0),
+            nn.Sequential(
+                Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
+                Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
+                Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
+                Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
+                Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0)
+            ),
+            Conv2dBlock(in_C=256, out_C=128, k=1, s=1, p=0)
+        ])
         
         self.p2_layers = nn.Sequential(
             Conv2dBlock(in_C=256, out_C=128, k=1, s=1, p=0),
@@ -73,10 +75,42 @@ class CSPDarknet53_SPP_PAN(nn.Module):
             Conv2dBlock(in_C=256, out_C=128, k=1, s=1, p=0),
             Conv2dBlock(in_C=128, out_C=256, k=3, s=1, p=1),
             Conv2dBlock(in_C=256, out_C=128, k=1, s=1, p=0),
-            
-            ################################################
+        )
+        
+        self.n2_head = nn.Sequential(
             Conv2dBlock(in_C=128, out_C=256, k=3, s=1, p=1),
             Conv2dBlock(in_C=256, out_C=255, k=1, s=1, p=0, activation='identity')
+        )
+        
+        self.augmented_path = nn.ModuleList([
+            Conv2dBlock(in_C=128, out_C=256, k=3, s=2, p=1),
+            Conv2dBlock(in_C=256, out_C=512, k=3, s=2, p=1),
+        ])
+        
+        self.n2_3_layers = nn.Sequential(
+            Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
+            Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
+            Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0),
+            Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
+            Conv2dBlock(in_C=512, out_C=256, k=1, s=1, p=0)
+        )
+            
+        self.n3_head = nn.Sequential(
+            Conv2dBlock(in_C=256, out_C=512, k=3, s=1, p=1),
+            Conv2dBlock(in_C=512, out_C=255, k=1, s=1, p=0, activation='identity')
+        )
+        
+        self.n3_4_layers = nn.Sequential(
+            Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0),
+            Conv2dBlock(in_C=512,  out_C=1024, k=3, s=1, p=1),
+            Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0),
+            Conv2dBlock(in_C=512,  out_C=1024, k=3, s=1, p=1),
+            Conv2dBlock(in_C=1024, out_C=512,  k=1, s=1, p=0)
+        )
+        
+        self.n4_head = nn.Sequential(
+            Conv2dBlock(in_C=512,  out_C=1024, k=3, s=1, p=1),
+            Conv2dBlock(in_C=1024, out_C=255,  k=1, s=1, p=0, activation='identity')
         )
 
     def forward(self, x):
@@ -95,23 +129,47 @@ class CSPDarknet53_SPP_PAN(nn.Module):
             p[-1] = self.backbone[i](p[-1])
             
             
-        # Top-down path for neck
+        # Top-down path from neck
         p[-2] = torch.cat([
             self.lateral_connections[0](p[-2]),
-            self.upsample_layers[0](p[-1])
+            self.upsample_layers[0](self.p3_layers[0](p[-1]))
         ], dim=1)
-        p[-2] = self.p3_layers(p[-2])
+        p[-2] = self.p3_layers[1](p[-2])
         
         p[-3] = torch.cat([
             self.lateral_connections[1](p[-3]),
-            self.upsample_layers[1](p[-2])
+            self.upsample_layers[1](self.p3_layers[2](p[-2]))
         ], dim=1)
         p[-3] = self.p2_layers(p[-3])
         
-        return x
+        
+        # Augmented bottom-up path from neck and heads
+        outputs =[]
+        outputs.append(self.n2_head(p[-3]))
+
+        x = self.n2_3_layers(torch.cat([
+            self.augmented_path[0](p[-3]),
+            p[-2]
+        ], dim=1))
+        
+        outputs.append(self.n3_head(x))
+        
+        x = self.n3_4_layers(torch.cat([
+            self.augmented_path[1](x),
+            p[-1]
+        ], dim=1))
+        
+        outputs.append(self.n4_head(x))
+        
+        return outputs
     
     
 if __name__ == "__main__":
     xTest = torch.rand((32,3,256,256))
     modelTest = CSPDarknet53_SPP_PAN(10)
-    print(modelTest(xTest).shape)
+
+    yTest = modelTest(xTest)
+    
+    print(yTest[0].shape)
+    print(yTest[1].shape)
+    print(yTest[2].shape)
