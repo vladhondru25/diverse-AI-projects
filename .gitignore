@@ -1,2 +1,6 @@
 Inception-Network/data/
 CrossStagePartial-Network/data/
+__pycache__/
+.ipynb_checkpoints/
+.vscode/
+.DS_Store
