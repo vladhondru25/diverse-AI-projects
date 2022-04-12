@@ -1,5 +1,7 @@
 Inception-Network/data/
 CrossStagePartial-Network/data/
+dog-breed-classifier/data/
+
 __pycache__/
 .ipynb_checkpoints/
 .vscode/
