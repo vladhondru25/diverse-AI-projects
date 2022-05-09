@@ -6,3 +6,9 @@ __pycache__/
 .ipynb_checkpoints/
 .vscode/
 .DS_Store
+
+disaster-tweets/lightning_logs/
+disaster-tweets/*.csv
+disaster-tweets/.word_vectors_cache/
+disaster-tweets/main_glove.ipynb
+glove.6B.100d.txt
